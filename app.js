@@ -1,3 +1,8 @@
+/*
+TODO:
+	- add capability to convert all flash-based soundcloud embeds to
+		SoundCloud's new HTML5 audio player
+*/
 $(document).ready(function() {
 	var xml_url = "feed://thissongissick.com/blog/feed/";
 	var url = "http://pipes.yahoo.com/pipes/pipe.run?_id=2FV68p9G3BGVbc7IdLq02Q&_render=json&feedcount=20&feedurl=feed%3A%2F%2Fthissongissick.com%2Fblog%2Ffeed%2F";
