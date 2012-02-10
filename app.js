@@ -4,33 +4,48 @@ TODO:
 		SoundCloud's new HTML5 audio player
 */
 $(document).ready(function() {
-	var xml_url = "feed://thissongissick.com/blog/feed/";
-	var url = "http://pipes.yahoo.com/pipes/pipe.run?_id=2FV68p9G3BGVbc7IdLq02Q&_render=json&feedcount=20&feedurl=feed%3A%2F%2Fthissongissick.com%2Fblog%2Ffeed%2F";
-	var url2 = "http://www.blastcasta.com/feed-to-json.aspx?feedurl=feed%3A%2F%2Fthissongissick.com%2Fblog%2Ffeed%2F";
+	var original_link = 'http://thissongissick.com/blog/feed/';
+	var yql_link = "http://query.yahooapis.com/v1/public/yql"+
+		"?q=select%20*%20from%20rss%20where%20url%3D'http%3A%2F%2Fthissongissick.com%2Fblog%2Ffeed%2F'"+
+		"&format=json&diagnostics=true&callback=jsonCallback";
+	console.log("requesting rss feed: \n" + yql_link);
+	$.ajax({
+		url: yql_link,
+		success: function() {
+			console.log('data successfully retrieved');
+		}
+	});
 	
-	$.getJSON(url, function(data) {
-		var count = data.count;
-		var posts = data.value.items;
-		for(i=0; i<count; i++) {
-		    /*var soundclouds = $('embed[type="application/x-shockwave-flash"]');
-		    soundclouds.each(function(item) {
-		        var src = item.attr('src');
-		        var params = url.split("?")[1];
-		        var url = params.split("&amp;")[0];
-		        var embed = 
-		            '<iframe width="100%" height="166" scrolling="no" frameborder="no" ' +
-		            'src="' + url + '&amp;auto_play=false&amp;show_artwork=true&amp;color=ff7700">' +
-		            '</iframe>';
-		        item.replaceWith(embed);
-		    });*/
-		    
-		    var full_title = posts[i].title;
-		    var titles = full_title.split(":");
-		    var maintitle = titles[0];
-		    var subtitle = titles[1];
-		    var content = posts[i]["content:encoded"];
+	function jsonCallback(data) {
+		console.log('hello');
+		var count = data.query.count;
+		$(data.query.results.item).each(function(index) {
+			var title = this.title; 
+				//console.log('title: '+title);
+				var titles = title.split(":");
+			    var maintitle = titles[0];
+			    var subtitle = titles[1];
+			var link = this.link; 
+				//console.log('link: '+link);
+			var description = this.description; 
+				//console.log('description: '+description);
+			var content = this.encoded;
+			
+			//build homepage listview
+			$('#list').append(
+				'<li>' + 
+					//'<img style="float: left; max-width: 80px; max-height: 80px; margin: 5px;" src="'+$(content).find('img').first().attr('src')+'" />' +
+					'<a href=\"#post-'+index+'\">' +
+						'<h3 style="white-space: normal !important;">' + maintitle + '</h3>' + 
+						'<p style="white-space: normal !important;">' + subtitle + '</p>' + 
+					'</a>' + 
+					'<div style="clear: left;"></div>' + 
+				'</li>'
+			);
+			
+			//build indiv page
 			$('body').append(
-			'<div data-role="page" data-theme="b" id="post-'+i+'" data-url="post-'+i+'">' + 
+			'<div data-role="page" data-theme="b" id="post-'+index+'" data-url="post-'+index+'">' + 
 				'<header data-role="header">' +
 				    '<a href="#" data-rel="back" data-role="button" data-icon="arrow-l">Back</a>' +
 					'<h3 style="white-space: normal !important;">'+maintitle+'</h3>' +
@@ -40,19 +55,9 @@ $(document).ready(function() {
 				'</div>' +
 			'</div>'	
 			);
-			$('#list').append(
-				'<li>' + 
-					'<img style="float: left; max-width: 80px; max-height: 80px; margin: 5px;" src="'+$(posts[i]["content:encoded"]).find('img').first().attr('src')+'" />' +
-					'<a href=\"#post-'+i+'\">' +
-						'<h3 style="white-space: normal !important;">' + maintitle + '</h3>' + 
-						'<p style="white-space: normal !important;">' + subtitle /*posts[i].description*/ + '</p>' + 
-					'</a>' + 
-					'<div style="clear: left;"></div>' + 
-				'</li>'
-			);
-		}
-		$('#list').listview('refresh');
-		$('embed').remove(); //remove flash from mobile site
-	});
-	
+		});
+		
+		//refresh homepage
+		$('#home').page();
+	}
 });
