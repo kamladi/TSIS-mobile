@@ -43,17 +43,20 @@ $(document).ready(function() {
 			
 			//build indiv page
 			$('body').append(
-			'<div data-role="page" data-theme="b" id="post-'+index+'" data-url="post-'+index+'">' + 
+			'<div data-role="page" data-theme="b" id="post-'+index+'" class="post-page" data-url="post-'+index+'">' + 
 				'<header data-role="header">' +
 				    '<a href="#" data-rel="back" data-role="button" data-icon="arrow-l">Back</a>' +
 					'<h3 style="white-space: normal !important;">'+post.maintitle+'</h3>' +
 				'</header>' + 
-				'<div data-role="content">'+
+				'<div data-role="content" class="post-content">'+
 					'<p>'+post.content+'</p>' + 
 				'</div>' +
 			'</div>'	
 			);
 		});
+
+		//strip width formatting for youtube embeds
+		$('.post-content embed').attr('width', '').attr('height', '');
 
 		//refresh home page
 		$('#list').listview('refresh');
