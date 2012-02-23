@@ -5,11 +5,11 @@ TODO:
 */
 $(document).ready(function() {
 	var url = 'http://thissongissick.com/blog/feed/';
-	var yql_request = "select * from rss where url='" + url + "'";
+	var query = "select * from rss where url='" + url + "'";
 	var yql_link = 'http://query.yahooapis.com/v1/public/yql?q='+
-		encodeURIComponent(yql_request)+
+		encodeURIComponent(query)+
 		'&format=json&callback=?';
-	console.log("requesting rss feed: \n" + url);
+	console.log("requesting rss feed: \n" + yql_link);
 	var posts;
 	$.getJSON(yql_link, function(data) {
 		console.log('json data retrieved:');
@@ -53,12 +53,41 @@ $(document).ready(function() {
 				'</div>' +
 			'</div>'	
 			);
+
+			//converting flash coundcloud objects to html5 players
+			$('object param[name=src]').each(function(index, object) {
+				var src = object.getAttribute('value');
+				var decodedsrc = decodeURI(src);
+				var url = unescape(getParam(decodedsrc,'url'));
+				console.log(url);
+				var iframe_string = '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="http://w.soundcloud.com/player/?url='+url+'&amp;auto_play=false&amp;show_artwork=false&amp;color=ff7700"></iframe>';
+				$(object).parent().replaceWith(iframe_string);
+			});
 		});
 
 		//strip width formatting for youtube embeds
 		$('.post-content embed').attr('width', '').attr('height', '');
 
+
+
 		//refresh home page
 		$('#list').listview('refresh');
 	});
 });
+
+/*
+* function returns a value for a url parameter 
+*/
+function getParam ( url, sname )
+{
+  var params = url.substr(url.indexOf("?")+1);
+  var sval = "";
+  params = params.split("&");
+    // split param and value into individual pieces
+    for (var i=0; i<params.length; i++)
+       {
+         temp = params[i].split("=");
+         if ( [temp[0]] == sname ) { sval = temp[1]; }
+       }
+  return sval;
+}
