@@ -9,12 +9,41 @@
 		<link href="style.css" rel="stylesheet" />
 		<script src="http://code.jquery.com/jquery-1.6.1.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
+		<script src="handlebars.js"></script>
 		<!--SoundCloud HTML5 jQuery plugin-->
 		<link rel="stylesheet" href="soundcloud-custom-player/css/sc-player-artwork.css" type="text/css">
 		<script type="text/javascript" src="soundcloud-custom-player/js/soundcloud.player.api.js"></script>
 		<script type="text/javascript" src="soundcloud-custom-player/js/sc-player.js"></script>
 		<!--Custom Javascript-->
 		<script src="app.js" type="text/javascript" charset="utf-8"></script>
+		
+		<!--templates-->
+		<script id="list-item-template" type="text/x-handlebars-template" charset="utf-8">
+			{{#each this}}
+			<li>
+				<img src="{{imgsrc}}">
+				<a href="#post-{{index}}" id="{{index}}">
+					<h3 style="white-space: normal !important;">{{maintitle}}</h3>
+					<p style="white-space: normal !important;">{{subtitle}}</p>
+				</a>
+				<div style="clear: left;"></div>
+			</li>
+			{{/each}}
+		</script>
+		
+		<script id="page-template" type="text/x-handlebars-template" charset="utf-8">
+			{{#each this}}
+			<div data-role="page" data-theme="b" id="post-{{index}}" class="post-page" data-url="post-{{index}}">
+				<header data-role="header">
+				    <a href="#" data-rel="back" data-role="button" data-icon="arrow-l">Back</a>
+					<h3 style="white-space: normal !important;">{{maintitle}}</h3>
+				</header>
+				<div data-role="content" data-theme="c" class="post-content">
+					<p>{{{content}}}</p>
+				</div>
+			</div>
+			{{/each}}
+		</script>
 		
 	</head>
 	<body>

@@ -1,3 +1,9 @@
+#list li img {
+	float: left;
+	max-width: 80px;
+	//max-height: 80px;
+	margin: 5px;
+}
 .post-content img {
 	width: 100% !important;
 	height: auto !important;
